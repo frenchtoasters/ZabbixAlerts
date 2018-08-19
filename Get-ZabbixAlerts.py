@@ -350,7 +350,6 @@ class Alerts(object):
                 row['monitoringSystem'] = "ZABBIX"
                 row['entityName'] = host[0]['host']
                 row['alertSubject'] = trigger['description']
-                row['entityType'] = trigger['description']
                 row['triggerid'] = trigger['triggerid']
                 row['alertCriticality'] = trigger['priority']
                 row['alertStartTime'] = self.find_start_time(events)
@@ -358,7 +357,6 @@ class Alerts(object):
                 row['alertUpdateTime'] = int(time.time())
                 row['alertStatus'] = self.find_status(events)
                 row['alertCancelTime'] = self.find_cancel_time(events)
-                row['alertType'] = 0
                 row['entityId'] = host[0]['parentTemplates'][0]['templateid']
                 row['hostId'] = host[0]['hostid']
                 row['alertUrl'] = "http://msc-lex-zabbix.thinkmsc.net/zabbix/tr_events.php?" + \
@@ -393,7 +391,6 @@ class Alerts(object):
                 row['monitoringSystem'] = "ZABBIX"
                 row['entityName'] = host[0]['host']
                 row['alertSubject'] = trigger['description']
-                row['entityType'] = trigger['description']
                 row['triggerid'] = trigger['triggerid']
                 row['alertCriticality'] = trigger['priority']
                 row['alertStartTime'] = self.find_start_time(events)
@@ -401,7 +398,6 @@ class Alerts(object):
                 row['alertUpdateTime'] = int(time.time())
                 row['alertStatus'] = self.find_status(events)
                 row['alertCancelTime'] = self.find_cancel_time(events)
-                row['alertType'] = 0
                 row['entityId'] = host[0]['parentTemplates'][0]['templateid']
                 row['hostId'] = host[0]['hostid']
                 row['alertUrl'] = "http://msc-lex-zabbix.thinkmsc.net/zabbix/tr_events.php?" + \

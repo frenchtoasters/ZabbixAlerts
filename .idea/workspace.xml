@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3384e643-3b9f-44dc-81df-26efb8a12aba" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Get-ZabbixAlerts.py" beforeDir="false" afterPath="$PROJECT_DIR$/Get-ZabbixAlerts.py" afterDir="false" />
-    </list>
+    <list default="true" id="3384e643-3b9f-44dc-81df-26efb8a12aba" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,8 +14,8 @@
       <file leaf-file-name="Get-ZabbixAlerts.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Get-ZabbixAlerts.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2025">
-              <caret line="450" lean-forward="true" selection-start-line="450" selection-end-line="450" />
+            <state relative-caret-position="405">
+              <caret line="342" column="47" selection-start-line="342" selection-start-column="47" selection-end-line="342" selection-end-column="47" />
               <folding>
                 <element signature="e#764#775#0" expanded="true" />
               </folding>
@@ -135,8 +132,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Get-ZabbixAlerts.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2025">
-          <caret line="450" lean-forward="true" selection-start-line="450" selection-end-line="450" />
+        <state relative-caret-position="405">
+          <caret line="342" column="47" selection-start-line="342" selection-start-column="47" selection-end-line="342" selection-end-column="47" />
           <folding>
             <element signature="e#764#775#0" expanded="true" />
           </folding>
