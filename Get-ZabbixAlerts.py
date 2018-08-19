@@ -428,10 +428,14 @@ class Alerts(object):
             pass
 
         try:
+            '''
+            Who knows if this will work, i dont have a DB!! #Rick
             self.db = _mysql.connect(host="localhost", user="root",
                                      passwd="root", db="alerts_db")
             if self.db.error():
                 raise ValueError(self.db.error())
+            '''
+            self.db = []
         except ValueError as sve:
             print(sve)
             pass
@@ -445,9 +449,12 @@ if __name__ == "__main__":
     try:
         data = gatheredAlerts.gather_alerts()
 
+        '''
         cursor = gatheredAlerts.db.cursor()
         if gatheredAlerts.db.error():
             raise ValueError(gatheredAlerts.db.error())
+        '''
+        cursor = gatheredAlerts.db
     except ValueError as ve:
         print(ve)
         pass
@@ -458,18 +465,22 @@ if __name__ == "__main__":
         key_values = ','.join(str(e) for e in list(data[key].values()))
 
         try:
+            '''
             # Execute insert query for keys and values
             cursor.execute("""
                     Insert into alerts ( %s )
                     Values ( %s )
             """, (key_name, key_values))
-
+            
             # Commit changes
             gatheredAlerts.db.commit()
             if gatheredAlerts.db.error():
                 raise ValueError(gatheredAlerts.db.error())
+            '''
+            cursor.apppend(key_name,key_values)
+
         except ValueError as ve:
             print(ve)
             pass
 
-    cursor.close()
+    # cursor.close()
