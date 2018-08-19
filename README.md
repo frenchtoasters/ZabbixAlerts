@@ -58,3 +58,28 @@ PRIMARY KEY (`alertId`),
 * `chmod +x Get-ZabbixAlerts.py`
 * Query for new alerts `./Get-ZabbixAlerts.py`
 * Query for active alerts from Alerts Database `./Get-ZabbixAlerts.py --active`
+
+## Dcoker
+
+To run this application as a docker continater you need to run the following:
+
+* First you need to clone this repo
+
+```
+> git clone https://github.com/frenchtoasters/ZabbixAlerts.git
+```
+
+* Then you need to build the `dockerfile` within the repo
+
+```
+> cd ~/ZabbixAlerts
+> docker build -t ZabbixAlerts .
+```
+
+* After that is complete you can run the container with
+
+```
+> docker run --rm --it --name zabbix_alerts ZabbixAlerts
+```
+
+* The class will be invoked in the container and results pushed to database 
