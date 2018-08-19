@@ -59,7 +59,7 @@ PRIMARY KEY (`alertId`),
 * Query for new alerts `./Get-ZabbixAlerts.py`
 * Query for active alerts from Alerts Database `./Get-ZabbixAlerts.py --active`
 
-## Dcoker
+## Docker
 
 To run this application as a docker continater you need to run the following:
 
