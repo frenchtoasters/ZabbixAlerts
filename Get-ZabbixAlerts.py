@@ -314,18 +314,38 @@ class Alerts(object):
         :return: JSON object of alert information
         """
         if self.args.active:
-            self.db.query("""
-                Select alertId from alerts where monitoringSystem="Zabbix" and alertStatus="Active";
-            """)
-            triggerids = self.db.store_result()
+            try:
+                self.db.query("""
+                    Select alertId from alerts where monitoringSystem="Zabbix" and alertStatus="Active";
+                """)
+                triggerids = self.db.store_result()
+                if triggerids is None:
+                    raise ValueError("Unable to find Active Alerts in DB")
+                if self.db.error():
+                    raise ValueError(self.db.error())
+            except ValueError as fve:
+                print(fve)
+                pass
 
-            triggers = self.trigger_getlist(self.url, self.token, triggerids)
+            try:
+                triggers = self.trigger_getlist(self.url, self.token, triggerids)
+                if triggers is None:
+                    raise ValueError("Unable to find Active Triggers")
+            except ValueError as sve:
+                print(sve)
+                pass
 
             for trigger in triggers:
                 row = {}
 
-                host = self.host_get(self.url, self.token, trigger['triggerid'])
-                events = self.event_get(self.url, self.token, trigger['triggerid'])
+                try:
+                    host = self.host_get(self.url, self.token, trigger['triggerid'])
+                    events = self.event_get(self.url, self.token, trigger['triggerid'])
+                    if host or events is None:
+                        raise ValueError("Unable to get further information on trigger")
+                except ValueError as tve:
+                    print(tve)
+                    pass
 
                 row['monitoringSystem'] = "ZABBIX"
                 row['entityName'] = host[0]['host']
@@ -345,18 +365,30 @@ class Alerts(object):
                                   "triggerid=" + trigger['triggerid'] + \
                                   "&eventid=" + self.find_last_event(events)
                 row['alertMessage'] = host[0]['host'] + " " + \
-                                      trigger['description'] + " " + \
-                                      trigger['comments']
+                    trigger['description'] + " " + \
+                    trigger['comments']
 
                 self.data[trigger['triggerid']] = row
         else:
-            triggers = self.trigger_get(self.url, self.token)
+            try:
+                triggers = self.trigger_get(self.url, self.token)
+                if triggers is None:
+                    raise ValueError("There are No Active Alerts")
+            except ValueError as fve:
+                print(fve)
+                pass
 
             for trigger in triggers:
                 row = {}
 
-                host = self.host_get(self.url, self.token, trigger['triggerid'])
-                events = self.event_get_limited(self.url, self.token, trigger['triggerid'])
+                try:
+                    host = self.host_get(self.url, self.token, trigger['triggerid'])
+                    events = self.event_get_limited(self.url, self.token, trigger['triggerid'])
+                    if host or events is None:
+                        raise ValueError("Unable to further information on trigger")
+                except ValueError as sve:
+                    print(sve)
+                    pass
 
                 row['monitoringSystem'] = "ZABBIX"
                 row['entityName'] = host[0]['host']
@@ -376,8 +408,8 @@ class Alerts(object):
                                   "triggerid=" + trigger['triggerid'] + \
                                   "&eventid=" + self.find_last_event(events)
                 row['alertMessage'] = host[0]['host'] + " " + \
-                                      trigger['description'] + " " + \
-                                      trigger['comments']
+                    trigger['description'] + " " + \
+                    trigger['comments']
 
                 self.data[trigger['triggerid']] = row
 
@@ -391,10 +423,22 @@ class Alerts(object):
 
         self.url = "http://127.0.0.1/api_jsonrpc.php"
 
-        self.token = self.login(self.url)
+        try:
+            self.token = self.login(self.url)
+            if self.token is None:
+                raise ValueError("Unable to gather Auth Token")
+        except ValueError as fve:
+            print(fve)
+            pass
 
-        self.db = _mysql.connect(host="localhost", user="root",
-                                 passwd="root", db="alerts_db")
+        try:
+            self.db = _mysql.connect(host="localhost", user="root",
+                                     passwd="root", db="alerts_db")
+            if self.db.error():
+                raise ValueError(self.db.error())
+        except ValueError as sve:
+            print(sve)
+            pass
 
         self.data = {}
 
@@ -402,4 +446,34 @@ class Alerts(object):
 if __name__ == "__main__":
     gatheredAlerts = Alerts()
 
-    print(gatheredAlerts.gather_alerts())
+    try:
+        data = gatheredAlerts.gather_alerts()
+
+        cursor = gatheredAlerts.db.cursor()
+        if gatheredAlerts.db.error():
+            raise ValueError(gatheredAlerts.db.error())
+    except ValueError as ve:
+        print(ve)
+        pass
+
+    for key in data.keys():
+        # Convert keys and values into list of strings for DB insert
+        key_name = ','.join(str(e) for e in list(data[key].keys()))
+        key_values = ','.join(str(e) for e in list(data[key].values()))
+
+        try:
+            # Execute insert query for keys and values
+            cursor.execute("""
+                    Insert into alerts ( %s )
+                    Values ( %s )
+            """, (key_name, key_values))
+
+            # Commit changes
+            gatheredAlerts.db.commit()
+            if gatheredAlerts.db.error():
+                raise ValueError(gatheredAlerts.db.error())
+        except ValueError as ve:
+            print(ve)
+            pass
+
+    cursor.close()
