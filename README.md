@@ -73,13 +73,13 @@ To run this application as a docker continater you need to run the following:
 
 ```
 > cd ~/ZabbixAlerts
-> docker build -t ZabbixAlerts .
+> docker build -t zabbixalerts .
 ```
 
 * After that is complete you can run the container with
 
 ```
-> docker run --rm --it --name zabbix_alerts ZabbixAlerts
+> docker run --rm --it --name zabbix_alerts zabbixalerts
 ```
 
 * The class will be invoked in the container and results pushed to database 
