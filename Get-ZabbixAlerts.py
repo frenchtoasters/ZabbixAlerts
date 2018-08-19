@@ -315,6 +315,7 @@ class Alerts(object):
         """
         if self.args.active:
             try:
+                '''
                 self.db.query("""
                     Select alertId from alerts where monitoringSystem="Zabbix" and alertStatus="Active";
                 """)
@@ -323,6 +324,8 @@ class Alerts(object):
                     raise ValueError("Unable to find Active Alerts in DB")
                 if self.db.error():
                     raise ValueError(self.db.error())
+                '''
+                triggerids = ["15491", "13461"]
             except ValueError as fve:
                 print(fve)
                 pass
