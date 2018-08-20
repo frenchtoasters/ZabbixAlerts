@@ -362,7 +362,7 @@ class Alerts(object):
                 row['alertCancelTime'] = self.find_cancel_time(events)
                 row['entityId'] = host[0]['parentTemplates'][0]['templateid']
                 row['hostId'] = host[0]['hostid']
-                row['alertUrl'] = "http://msc-lex-zabbix.thinkmsc.net/zabbix/tr_events.php?" + \
+                row['alertUrl'] = "http://127.0.0.1/zabbix/tr_events.php?" + \
                                   "triggerid=" + trigger['triggerid'] + \
                                   "&eventid=" + self.find_last_event(events)
                 row['alertMessage'] = host[0]['host'] + " " + \
@@ -403,7 +403,7 @@ class Alerts(object):
                 row['alertCancelTime'] = self.find_cancel_time(events)
                 row['entityId'] = host[0]['parentTemplates'][0]['templateid']
                 row['hostId'] = host[0]['hostid']
-                row['alertUrl'] = "http://msc-lex-zabbix.thinkmsc.net/zabbix/tr_events.php?" + \
+                row['alertUrl'] = "http://127.0.0.1/zabbix/tr_events.php?" + \
                                   "triggerid=" + trigger['triggerid'] + \
                                   "&eventid=" + self.find_last_event(events)
                 row['alertMessage'] = host[0]['host'] + " " + \
