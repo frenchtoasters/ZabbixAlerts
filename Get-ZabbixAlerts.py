@@ -315,19 +315,24 @@ class Alerts(object):
         """
         if self.args.active:
             try:
-                '''
                 self.db.query("""
                     Select alertId from alerts where monitoringSystem="Zabbix" and alertStatus="Active";
                 """)
                 triggerids = self.db.store_result()
-                if triggerids is None:
-                    raise ValueError("Unable to find Active Alerts in DB")
-                if self.db.error():
-                    raise ValueError(self.db.error())
-                '''
-                triggerids = ["15491", "13461"]
-            except ValueError as fve:
-                print(fve)
+                try:
+                    triggerids = triggerids.fetch_row(maxrows=0,how=1)
+
+                    trigger_list = []
+                    for trigger in triggerids:
+                        trigger_list.append(trigger['alertId'])
+                except triggerids as e:
+                    print("Is DB empty?")
+                    print("Error: %d: %s" % (e.args[0], e.args[1]))
+                    pass
+
+                # triggerids = ["15491", "13461"]
+            except self.db.Error as e:
+                print("Error: %d: %s" % (e.args[0], e.args[1]))
                 pass
 
             try:
@@ -344,7 +349,9 @@ class Alerts(object):
                 try:
                     host = self.host_get(self.url, self.token, trigger['triggerid'])
                     events = self.event_get(self.url, self.token, trigger['triggerid'])
-                    if host or events is None:
+                    if host is None:
+                        raise ValueError("Unable to get further information on trigger")
+                    if events is None:
                         raise ValueError("Unable to get further information on trigger")
                 except ValueError as tve:
                     print(tve)
@@ -362,7 +369,7 @@ class Alerts(object):
                 row['alertCancelTime'] = self.find_cancel_time(events)
                 row['entityId'] = host[0]['parentTemplates'][0]['templateid']
                 row['hostId'] = host[0]['hostid']
-                row['alertUrl'] = "http://msc-lex-zabbix.thinkmsc.net/zabbix/tr_events.php?" + \
+                row['alertUrl'] = "http://127.0.0.1/zabbix/tr_events.php?" + \
                                   "triggerid=" + trigger['triggerid'] + \
                                   "&eventid=" + self.find_last_event(events)
                 row['alertMessage'] = host[0]['host'] + " " + \
@@ -385,7 +392,9 @@ class Alerts(object):
                 try:
                     host = self.host_get(self.url, self.token, trigger['triggerid'])
                     events = self.event_get_limited(self.url, self.token, trigger['triggerid'])
-                    if host or events is None:
+                    if host is None:
+                        raise ValueError("Unable to further information on trigger")
+                    if events is None:
                         raise ValueError("Unable to further information on trigger")
                 except ValueError as sve:
                     print(sve)
@@ -431,16 +440,12 @@ class Alerts(object):
             pass
 
         try:
-            '''
-            Who knows if this will work, i dont have a DB!! #Rick
-            self.db = _mysql.connect(host="localhost", user="root",
+            # Who knows if this will work, i dont have a DB!! #Rick
+            self.db = _mysql.connect(host="127.0.0.1", user="root",
                                      passwd="root", db="alerts_db")
-            if self.db.error():
-                raise ValueError(self.db.error())
-            '''
-            self.db = []
-        except ValueError as sve:
-            print(sve)
+            # self.db = []
+        except self.db.Error as e:
+            print("Error: %d: %s" % (e.args[0], e.args[1]))
             pass
 
         self.data = {}
@@ -458,8 +463,8 @@ if __name__ == "__main__":
             raise ValueError(gatheredAlerts.db.error())
         '''
         cursor = gatheredAlerts.db
-    except ValueError as ve:
-        print(ve)
+    except gatheredAlerts.db.Error as e:
+        print("Error: %d: %s" % (e.args[0], e.args[1]))
         pass
 
     for key in data.keys():
